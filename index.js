@@ -2,7 +2,7 @@ const express = require('express');
 const fetch = require('node-fetch');
 require('dotenv').config();
 
-// Initialize Express app
+// Initialize Express app 
 const app = express();
 // Use provided PORT from environment or fallback to 3000
 const port = process.env.PORT || 3000;
