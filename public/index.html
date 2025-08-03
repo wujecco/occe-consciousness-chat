@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Occe Consciousness Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f8f8f8;
+      display: flex;
+      justify-content: center;
+      padding-top: 40px;
+    }
+    .container {
+      width: 600px;
+      background: #fff;
+      border: 1px solid #ccc;
+      padding: 20px;
+      border-radius: 4px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    #chatHistory {
+      height: 300px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin-bottom: 10px;
+      white-space: pre-wrap;
+    }
+    #userInput {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    #sendButton {
+      padding: 10px 20px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    #sendButton:disabled {
+      background: #999;
+      cursor: default;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="chatHistory">Historia chatu</div>
+    <input type="text" id="userInput" placeholder="Napisz wiadomość..." />
+    <button id="sendButton">Wyślij</button>
+  </div>
+
+  <script>
+    const chatHistory = document.getElementById('chatHistory');
+    const userInput = document.getElementById('userInput');
+    const sendButton = document.getElementById('sendButton');
+
+    async function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+      addMessage('Ty', text);
+      userInput.value = '';
+      sendButton.disabled = true;
+      try {
+        const response = await fetch('/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message: text })
+        });
+        const data = await response.json();
+        if (data.reply) {
+          addMessage('Asystent', data.reply);
+        } else if (data.error) {
+          addMessage('Błąd', data.error);
+        }
+      } catch (err) {
+        addMessage('Błąd', 'Wystąpił problem z serwerem.');
+      } finally {
+        sendButton.disabled = false;
+      }
+    }
+
+    function addMessage(author, content) {
+      chatHistory.textContent += `${author}: ${content}\n`;
+      chatHistory.scrollTop = chatHistory.scrollHeight;
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    userInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>
