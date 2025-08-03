@@ -1,0 +1,14 @@
+{
+  "name": "render-chat-app",
+  "version": "1.0.0",
+  "description": "Simple chat app using Express and OpenAI API on Render",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.1.4",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.1"
+  }
+}
